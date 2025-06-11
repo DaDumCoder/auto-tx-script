@@ -1,0 +1,29 @@
+name: auto-tx-bot
+
+on:
+  workflow_dispatch:          # run manually
+  schedule:
+    - cron: "*/15 * * * *"    # every 15 min; change if you like
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci           # needs package.json committed
+
+      - name: Send transaction
+        run: node src/bot.js  # adjust if your file lives elsewhere
+        env:
+          RPC_URL:     ${{ secrets.RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          TO_ADDRESS:  ${{ secrets.TO_ADDRESS }}
+          VALUE_ETH:   ${{ secrets.VALUE_ETH }}
