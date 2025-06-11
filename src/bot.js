@@ -1,4 +1,14 @@
 import 'dotenv/config';
+// ── quick debug dump ─────────────────────────
+console.log('ENV DUMP ↓');
+console.log('RPC_URL        =', process.env.RPC_URL);
+console.log('TOKEN_ADDRESS  =', process.env.TOKEN_ADDRESS);
+console.log('TOKEN_DECIMALS =', process.env.TOKEN_DECIMALS);
+console.log('VALUE_TOKENS   =', process.env.VALUE_TOKENS);
+console.log('TO_ADDRESS     =', process.env.TO_ADDRESS);
+console.log('ENV DUMP ↑\n');
+// ─────────────────────────────────────────────
+
 import { JsonRpcProvider, Wallet, parseUnits, Contract } from 'ethers';
 
 // ── CONFIG ────────────────────────────────────────────
