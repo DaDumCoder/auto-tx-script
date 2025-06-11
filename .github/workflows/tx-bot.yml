@@ -18,7 +18,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci           # needs package.json committed
+        run: npm install --no-audit --no-fund           # needs package.json committed
 
       - name: Send transaction
         run: node src/bot.js  # adjust if your file lives elsewhere
