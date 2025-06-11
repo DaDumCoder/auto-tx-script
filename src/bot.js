@@ -1,31 +1,39 @@
-require('dotenv').config();
-const { ethers } = require('ethers');
+import 'dotenv/config';
+import { JsonRpcProvider, Wallet, parseUnits, Contract } from 'ethers';
 
-const provider   = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const wallet     = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const to         = process.env.TO_ADDRESS;
-const valueWei   = ethers.parseEther(process.env.VALUE_ETH);
+// ── CONFIG ────────────────────────────────────────────
+const provider        = new JsonRpcProvider(process.env.RPC_URL);
+const TOKEN_ADDRESS   = process.env.TOKEN_ADDRESS;
+const TOKEN_DECIMALS  = Number(process.env.TOKEN_DECIMALS || 18);
+const TO              = process.env.TO_ADDRESS;
+const AMOUNT          = parseUnits(process.env.VALUE_TOKENS, TOKEN_DECIMALS);
 
-let txCount = 0;
-const delayMs = 10_000;        // send every 10 s; tweak as you like
-let running = true;
+// ── LOAD WALLETS FROM SECRETS/VARIABLES ───────────────
+const privKeys = JSON.parse(process.env.WALLET_KEYS_JSON);
+if (!privKeys.length) throw new Error('No private keys loaded');
 
-// Graceful shutdown on Ctrl+C
-process.on('SIGINT', () => {
-  console.log('\nStopping bot…');
-  running = false;
-});
+// (If you also stored addresses separately)
+// const addresses = JSON.parse(process.env.WALLET_ADDR_JSON);
 
-async function sendLoop() {
-  while (running) {
-    try {
-      const tx = await wallet.sendTransaction({ to, value: valueWei });
-      console.log(`#${++txCount}  tx sent → ${tx.hash}`);
-    } catch (err) {
-      console.error('Tx failed:', err.reason || err);
-    }
-    await new Promise(r => setTimeout(r, delayMs));
+// ── ERC-20 CONTRACT ───────────────────────────────────
+const token = new Contract(
+  TOKEN_ADDRESS,
+  ['function transfer(address to,uint256 amt) returns (bool)'],
+  provider
+);
+
+// ── SEND FROM RANDOM WALLET ───────────────────────────
+async function sendRandom() {
+  const pk = privKeys[Math.floor(Math.random() * privKeys.length)];
+  const w  = new Wallet(pk, provider);
+
+  try {
+    const tx = await token.connect(w).transfer(TO, AMOUNT);
+    console.log(`tx from ${w.address.slice(0,6)}… → ${tx.hash}`);
+  } catch (err) {
+    console.error(`wallet ${w.address.slice(0,6)}… failed:`,
+                  err.shortMessage || err);
   }
 }
 
-sendLoop();
+sendRandom();
