@@ -3,24 +3,28 @@ name: auto-tx-bot
 on:
   workflow_dispatch:          # run it manually from the UI
   schedule:
-    - cron:  '*/15 * * * *'   # every 15 min (tweak as needed)
+    - cron: "*/15 * * * *"    # every 15 min – adjust as you like
 
 jobs:
   send:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: npm ci            # installs ethers, dotenv, etc.
+      - name: Install dependencies
+        run: npm ci            # requires package.json to be in the repo
 
-      - run: node src/bot.js   # fires the loop
+      - name: Send transaction
+        run: node src/bot.js   # path must match your file
         env:
-          RPC_URL:    ${{ secrets.RPC_URL }}
-          PRIVATE_KEY:${{ secrets.PRIVATE_KEY }}
-          TO_ADDRESS: ${{ secrets.TO_ADDRESS }}
-          VALUE_ETH:  ${{ secrets.VALUE_ETH }}
+          RPC_URL:     ${{ secrets.RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          TO_ADDRESS:  ${{ secrets.TO_ADDRESS }}
+          VALUE_ETH:   ${{ secrets.VALUE_ETH }}
