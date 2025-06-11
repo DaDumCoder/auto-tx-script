@@ -1,5 +1,9 @@
-"scripts": {
-  "start": "node src/bot.js",
-  "lint": "eslint ."
+{
+  "name": "auto-tx-script",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "ethers": "^6.12.0",
+    "dotenv": "^16.4.0"
+  }
 }
-
