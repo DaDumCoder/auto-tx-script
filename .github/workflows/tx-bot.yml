@@ -22,8 +22,11 @@ jobs:
 
       - name: Send transaction
         run: node src/bot.js  # adjust if your file lives elsewhere
-        env:
-          RPC_URL:     ${{ secrets.RPC_URL }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          TO_ADDRESS:  ${{ secrets.TO_ADDRESS }}
-          VALUE_ETH:   ${{ secrets.VALUE_ETH }}
+env:
+  RPC_URL:           ${{ secrets.RPC_URL }}
+  TOKEN_ADDRESS:     ${{ secrets.TOKEN_ADDRESS }}
+  TOKEN_DECIMALS:    ${{ secrets.TOKEN_DECIMALS }}
+  VALUE_TOKENS:      ${{ secrets.VALUE_TOKENS }}
+  TO_ADDRESS:        ${{ secrets.TO_ADDRESS }}
+  WALLET_KEYS_JSON:  ${{ secrets.WALLET_KEYS_JSON }}
+
