@@ -1,7 +1,7 @@
 {
   "name": "auto-tx-script",
   "version": "1.0.0",
-  "type": "module",              // <- add this line
+  "type": "module",         
   "dependencies": {
     "ethers": "^6.14.3",
     "dotenv": "^16.4.0"
