@@ -1,1 +1,5 @@
+"scripts": {
+  "start": "node src/bot.js",
+  "lint": "eslint ."
+}
 
